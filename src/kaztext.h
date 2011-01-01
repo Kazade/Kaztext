@@ -19,4 +19,8 @@ void ktCacheString(const KTwchar* string);
 
 KTfloat ktGetStringWidth(const KTwchar* text);
 
+#define KT_FONT_HEIGHT 1000
+
+void ktGetIntegerv(KTuint type, KTuint* out);
+
 #endif // KAZTEXT_H_INCLUDED

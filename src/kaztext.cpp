@@ -244,3 +244,10 @@ void ktDrawTextCentred(float x, float y, const KTwchar* text) {
     ktDrawText(x, y, text);
     glPopMatrix();
 }
+
+void ktGetIntegerv(KTuint type, KTuint* out) {
+	Font::ptr font = fonts_[current_font_];
+	if(type == KT_FONT_HEIGHT) {
+		*out = font->get_size();
+	}
+}
