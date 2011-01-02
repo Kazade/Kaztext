@@ -9,11 +9,16 @@ typedef char KTchar;
 typedef wchar_t KTwchar;
 typedef float KTfloat;
 
+#define KT_ALIGN_LEFT 0
+#define KT_ALIGN_CENTRE 1
+#define KT_ALIGN_RIGHT 2
+
 void ktGenFonts(KTsizei n, KTuint* fonts);
 void ktBindFont(KTuint font);
 void ktLoadFont(const KTchar* filename, const KTsizei font_size);
-void ktDrawText(float x, float y, const KTwchar* text);
-void ktDrawTextCentred(float x, float y, const KTwchar* text);
+void ktDrawText(KTfloat x, KTfloat y, const KTwchar* text);
+void ktDrawTextCentred(KTfloat x, KTfloat y, const KTwchar* text);
+void ktDrawTextWrapped(KTfloat x, KTfloat y, KTfloat width, KTfloat height, const KTwchar* text, KTuint alignment);
 void ktDeleteFonts(KTsizei n, const KTuint* fonts);
 void ktCacheString(const KTwchar* string);
 

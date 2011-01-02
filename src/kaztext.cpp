@@ -8,6 +8,7 @@
 
 #include <GL/gl.h>
 #include <boost/shared_ptr.hpp>
+#include <boost/algorithm/string/trim.hpp>
 
 #include "kaztext.h"
 
@@ -243,6 +244,86 @@ void ktDrawTextCentred(float x, float y, const KTwchar* text) {
     glTranslatef(-length / 2.0f, 0.0f, 0.0f);
     ktDrawText(x, y, text);
     glPopMatrix();
+}
+
+void ktDrawTextWrapped(KTfloat x, KTfloat y, KTfloat width, KTfloat height, const KTwchar* text, KTuint alignment) {
+	std::vector<std::wstring> lines;
+
+	KTuint line_height;
+	ktGetIntegerv(KT_FONT_HEIGHT, &line_height);
+	line_height *= 1.5f; //FIXME: HACK, need to get actual line height from FT
+	
+	assert(height >= line_height);
+	
+	KTfloat cx = 0.0f, cy = line_height;
+
+	std::wstring to_split(text);
+	std::wstring temp;
+	KTuint last_space = 0;
+	
+	for(int i = 0; i < to_split.length(); ++i) {		
+		KTfloat char_width = fonts_[current_font_]->get_char_advance_x(to_split[i]);
+		if(to_split[i] == L'\n') {
+			//Split on new lines, don't add the newline char though
+			lines.push_back(temp);
+			cx = 0.0f;
+			temp.clear();
+			cy += line_height;
+			continue;
+		}
+		
+		if(cx + char_width >= width) {
+			std::wstring new_line(temp.begin(), temp.begin() + last_space);
+			std::wstring remainder(temp.begin() + last_space, temp.end());
+			lines.push_back(new_line);
+			
+			remainder += to_split[i];						
+			cx = 0.0f;	
+			for(KTuint j = 0; j < remainder.length(); ++j) {
+				cx += fonts_[current_font_]->get_char_advance_x(remainder[j]);
+			}
+					
+			temp = remainder;
+			
+			cy += line_height;
+			if(cy >= height) {
+				//If we have gone past the available height, clear the temp string and the add
+				//three dots (...) to the finally displayed line
+				temp.clear();
+				std::wstring last_line = lines[lines.size() - 1];
+				std::wstring new_last_line(last_line.begin(), last_line.begin() + (last_line.length() - 3));
+				new_last_line += L"...";
+				lines[lines.size() - 1] = new_last_line;
+				break;
+			}
+		} else {			
+			temp += to_split[i];
+			cx += char_width;
+			
+			if(to_split[i] == L' ') {
+				last_space = temp.size();
+			}					
+		}
+	}
+	
+	if(!temp.empty()) {
+		lines.push_back(temp);
+	}
+	
+	glPushMatrix();
+		for(int i = 0; i < lines.size(); ++i) {
+			lines[i] = boost::algorithm::trim_copy(lines[i]);
+			glTranslatef(0.0f, line_height, 0.0f);
+			if(alignment == KT_ALIGN_LEFT) {
+				ktDrawText(x, 0, lines[i].c_str());
+			} else if(alignment == KT_ALIGN_CENTRE) {
+				ktDrawTextCentred(x + (width / 2), 0, lines[i].c_str());
+			} else {
+				assert(0 && "Right align not implemented");
+			}
+			
+		}
+	glPopMatrix();
 }
 
 void ktGetIntegerv(KTuint type, KTuint* out) {
