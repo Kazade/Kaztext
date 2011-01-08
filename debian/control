@@ -1,0 +1,15 @@
+Source: libkaztext-dev
+Priority: optional
+Section: libs
+Maintainer: Luke Benstead (Kazade) <kazade@gmail.com>
+Build-Depends: dpkg (>= 1.13.2), debhelper (>= 4.0), cmake (>= 2), libfreetype6-dev, libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, libx11-dev, libboost-dev
+Standards-Version: 3.9.1
+
+Package: libkaztext-dev
+Architecture: any
+Section: libdevel
+Description: Kaztext OpenGL text library development files
+ Kaztext is a 2D text library written in C.
+ .
+ This package contains the files needed to compile and link programs which
+ use Kaztext.
