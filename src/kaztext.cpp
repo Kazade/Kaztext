@@ -1,5 +1,6 @@
 #include <map>
 #include <vector>
+#include <iostream>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -229,20 +230,21 @@ void ktCacheString(const KTwchar* s) {
 }
 
 KTfloat ktGetStringWidth(const KTwchar* text_in) {
+    Font::ptr font = fonts_[current_font_];
+    
     std::wstring text(text_in);
-
-    float len = 0;
-    for(std::wstring::size_type i = 0; i < text.length(); ++i) {
-        len += fonts_[current_font_]->get_char_advance_x(text[i]);
+    int len = 0;
+    for(std::wstring::const_iterator it = text.begin(); it != text.end(); ++it) {
+        wchar_t ch = (*it);
+        len += font->get_char_advance_x(ch);
     }
-    return len;
+    return (float) len;
 }
 
 void ktDrawTextCentred(float x, float y, const KTwchar* text) {
-    KTfloat length = ktGetStringWidth(text);
+    KTfloat length = ktGetStringWidth(text) / 2.0f; 
     glPushMatrix();
-    glTranslatef(-length / 2.0f, 0.0f, 0.0f);
-    ktDrawText(x, y, text);
+    ktDrawText(x - int(length), y, text);
     glPopMatrix();
 }
 
