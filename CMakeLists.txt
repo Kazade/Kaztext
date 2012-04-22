@@ -5,11 +5,11 @@ PROJECT(kaztext)
 SET(CMAKE_INSTALL_PREFIX "/usr")
 
 SET(kaztext_headers
-	src/kaztext.h
+	kaztext/kaztext.h
 )
 
 SET(kaztext_src
-	src/kaztext.cpp
+	kaztext/kaztext.cpp
 )
 
 FIND_PACKAGE(Freetype REQUIRED)
