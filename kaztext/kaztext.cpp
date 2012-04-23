@@ -124,7 +124,7 @@ bool Font::generate_glyph_texture(wchar_t ch) {
     for(KTuint j = 0; j < tex_h; ++j) {
         for(KTuint i = 0; i < tex_w; ++i) {
             int idx = 2 * (i + j * tex_w);
-            data[idx] = data[idx+1] = (i >= bitmap.width || j >= bitmap.rows) ? 0 : bitmap.buffer[i + bitmap.width * j];
+            data[idx] = data[idx+1] = (i >= (KTuint)bitmap.width || j >= (KTuint)bitmap.rows) ? 0 : bitmap.buffer[i + bitmap.width * j];
         }
     }
 
@@ -263,7 +263,7 @@ void ktDrawTextWrapped(KTfloat x, KTfloat y, KTfloat width, KTfloat height, cons
 	std::wstring temp;
 	KTuint last_space = 0;
 	
-	for(int i = 0; i < to_split.length(); ++i) {		
+	for(KTuint i = 0; i < to_split.length(); ++i) {		
 		KTfloat char_width = fonts_[current_font_]->get_char_advance_x(to_split[i]);
 		if(to_split[i] == L'\n') {
 			//Split on new lines, don't add the newline char though
@@ -313,7 +313,7 @@ void ktDrawTextWrapped(KTfloat x, KTfloat y, KTfloat width, KTfloat height, cons
 	}
 	
 	glPushMatrix();
-		for(int i = 0; i < lines.size(); ++i) {
+		for(KTuint i = 0; i < lines.size(); ++i) {
 			lines[i] = boost::algorithm::trim_copy(lines[i]);
 			glTranslatef(0.0f, line_height, 0.0f);
 			if(alignment == KT_ALIGN_LEFT) {
